@@ -1,7 +1,12 @@
 package com.judy.crawler;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.judy.crawler.domian.Page;
+import com.judy.crawler.domian.PriceBean;
+import com.judy.crawler.domian.ProductPrice;
 import com.judy.crawler.utils.CrawlerUtils;
+import com.judy.crawler.utils.HtmlUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -30,34 +35,13 @@ public class Crawler {
      * @return Page 实例
      */
     public Page download(String url){
-        Page page = new Page();
 
-        //使用技术：HttpClient
-        //HttpClient:类比作browser
-        HttpClient client= new DefaultHttpClient();
+    Page page = new Page();
 
-        //请求方式：GET,POST,PUT,DELETE等等
-        HttpUriRequest request=new HttpGet(url);
-        HttpResponse response= null;
-        try {
-            //类比：在浏览器键入url，敲回车
-            response = client.execute(request);
-
-            //判断状态码是200 :服务器端已经将反馈的结果正常传送给客户端了
-            if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK){
-                String content = EntityUtils.toString(response.getEntity());
-                page.setContent(content);
-                page.setUrl(url);
-                return page;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
+   String content= HtmlUtils.downloadPageContent(url);
+   page.setContent(content);
+   return page;
+}
 
 
     /**
@@ -98,6 +82,9 @@ public class Crawler {
 
 
         //售价 ~>Double
+        double price = CrawlerUtils.parseProductPrice("");
+        page.setPrice(price);
+
         //评论数~>int
         //好评率 ~>Double
         //参数 ~>String

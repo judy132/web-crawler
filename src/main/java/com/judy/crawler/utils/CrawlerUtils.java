@@ -1,6 +1,10 @@
 package com.judy.crawler.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.judy.crawler.domian.Page;
+import com.judy.crawler.domian.PriceBean;
+import com.judy.crawler.domian.ProductPrice;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
@@ -108,5 +112,18 @@ public class CrawlerUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static double parseProductPrice(String pageURL){
+        String content = HtmlUtils.downloadPageContent(pageURL);
+        String jsonArray= JSON.parseArray(content).toJSONString();
+        JSONObject obj=new JSONObject();
+        obj.put("beans",jsonArray); //
+        //
+        ProductPrice productPrice=JSON.parseObject(obj.toJSONString().replace("\\",""), ProductPrice.class);
+        PriceBean bean = productPrice.getBeans().get(0);
+//        System.out.println(bean.getP());
+        return Double.valueOf(bean.getP());
+
     }
 }
