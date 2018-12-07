@@ -10,4 +10,5 @@ package com.judy.crawler.dao;
  * @version:1.0
  */
 public interface IPageDao {
+    public void save();
 }

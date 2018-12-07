@@ -1,4 +1,5 @@
-package com.judy.crawler.domian;
+package com.judy.crawler.domian.price;
+
 
 public class PriceBean{
     //
@@ -47,5 +48,15 @@ public class PriceBean{
 
     public void setP(String p) {
         this.p = p;
+    }
+
+    @Override
+    public String toString() {
+        return "PriceBean{" +
+                "op='" + op + '\'' +
+                ", m='" + m + '\'' +
+                ", id='" + id + '\'' +
+                ", p='" + p + '\'' +
+                '}';
     }
 }

@@ -74,6 +74,22 @@ public class Page {
      */
     private String params;
 
+    public Page() {
+    }
+
+    public Page(String id, String goodsId, String source, String url, String title, String imageUrl, double price, int commentCnt, double goodRate, String params) {
+        this.id = id;
+        this.goodsId = goodsId;
+        this.source = source;
+        this.url = url;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.commentCnt = commentCnt;
+        this.goodRate = goodRate;
+        this.params = params;
+    }
+
     public String getId() {
         return id;
     }
@@ -160,5 +176,22 @@ public class Page {
 
     public void setParams(String params) {
         this.params = params;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Page{" +
+                "id='" + id + '\'' +
+                ", goodsId='" + goodsId + '\'' +
+                ", source='" + source + '\'' +
+                ", url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", price=" + price +
+                ", commentCnt=" + commentCnt +
+                ", goodRate=" + goodRate +
+                ", params='" + params + '\'' +
+                '}';
     }
 }

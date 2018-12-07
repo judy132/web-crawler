@@ -11,5 +11,10 @@ import com.judy.crawler.dao.IPageDao;
  * @author judy
  * @version:1.0
  */
-public class PageDaoImpl implements IPageDao {
+public class DefaultPageDaoImpl implements IPageDao {
+    @Override
+    public void save() {
+        String sql="insert into tb_product_info values(?,?,?,?,?,?,?,?,?,?)";
+
+    }
 }

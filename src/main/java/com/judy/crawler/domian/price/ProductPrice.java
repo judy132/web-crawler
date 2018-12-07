@@ -1,4 +1,6 @@
-package com.judy.crawler.domian;
+package com.judy.crawler.domian.price;
+
+import com.judy.crawler.domian.price.PriceBean;
 
 import java.util.List;
 
@@ -26,6 +28,13 @@ public class ProductPrice {
 
     public void setBeans(List<PriceBean> beans) {
         this.beans = beans;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductPrice{" +
+                "beans=" + beans +
+                '}';
     }
 }
 

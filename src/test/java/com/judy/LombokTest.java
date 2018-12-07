@@ -1,6 +1,5 @@
 package com.judy;
 
-import com.judy.crawler.domian.Page;
 import org.junit.Test;
 
 /**

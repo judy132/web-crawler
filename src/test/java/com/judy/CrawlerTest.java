@@ -29,6 +29,7 @@ public class CrawlerTest {
 
         //2）解析
         crawler.parse(page);
+        System.out.println(page);
 
         //3) 存储
         crawler.store(page);
