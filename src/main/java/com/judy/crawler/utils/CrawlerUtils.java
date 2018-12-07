@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.judy.crawler.domian.Page;
 import com.judy.crawler.domian.comment.CommentBean;
-import com.judy.crawler.domian.comment.ProductComment;
 import com.judy.crawler.domian.price.PriceBean;
 import com.judy.crawler.domian.price.ProductPrice;
 import org.htmlcleaner.HtmlCleaner;
@@ -127,25 +126,33 @@ public class CrawlerUtils {
      * @return
      */
     public static double parseProductPrice(String pageURL) {
+        //①根据url，获得内容
         String content = HtmlUtils.downloadPageContent(pageURL);
+
+        //②解析内容
         JSONArray jsonArray = JSON.parseArray(content);
         JSONObject obj = new JSONObject();
         obj.put("beans", jsonArray); //
-        //
 //        String str=obj.toJSONString().replace("\"[","[").replace("]\"","]").replace("\\","");
         //str: {"beans",[{"op":"1399.00","m":"9999.00","id":"J_7479820","p":"1199.00"}]}
+
         ProductPrice productPrice = JSON.parseObject(obj.toJSONString(), ProductPrice.class);
         PriceBean bean = productPrice.getBeans().get(0);
-//        System.out.println(bean.getP());
         return Double.valueOf(bean.getP());
 
     }
 
+    /**
+     * 解析商品的的评论数和好评率
+     * @param page
+     * @param commentURL
+     */
     public static void parseProductCommentCountAndGoodRate(Page page, String commentURL) {
         String content = HtmlUtils.downloadPageContent(commentURL);
 
-        //②解析内容
-       /* CommentBean commentBean = null;
+       /*
+       这个方法不行，空指针找不到错误原因
+       CommentBean commentBean = null;
         try {
 
             commentBean = JSON.parseObject(content, ProductComment.class).getCommentBeans().get(0);
@@ -153,6 +160,7 @@ public class CrawlerUtils {
         } catch (Exception e) {
             commentBean = new CommentBean();
         }*/
+
         JSONObject json = (JSONObject) JSON.parse(content);
         CommentBean commentBean = new CommentBean();
         commentBean.setGoodRate(((BigDecimal) ((JSONObject) json.getJSONArray("CommentsCount").get(0)).get("GoodRate")).doubleValue());

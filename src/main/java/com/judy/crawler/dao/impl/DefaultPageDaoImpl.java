@@ -7,6 +7,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Description: 将解析后的页面数据保存到db中数据访问层接口实现类<br/>
@@ -22,16 +23,21 @@ public class DefaultPageDaoImpl implements IPageDao {
 
     @Override
     public void save(Page page) {
+        List<String> urls = page.getUrls();
+        //若是列表页面，就不需要保存
+        if (urls != null && urls.size() > 0) {
+            return;
+        }
         //先查询表中相同的数据是否存在
         try {
             Page queryBean = queryRunner.query("select * from tb_product_info where goodsId=? and source=?",
                     new BeanHandler<>(Page.class), page.getGoodsId(), page.getSource());
-            //如果存在则更新
             if (queryBean == null) {
-                //不存在则添加
+                //如果不存在 则添加
                 saveToDB(page);
             }else {
-
+                //存在 则更新
+                updateToDB(page,queryBean);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,7 +67,7 @@ public class DefaultPageDaoImpl implements IPageDao {
      * 更新数据库中相同的商品的参数（因为商品有些参数是在不断变化的）
      * @param page
      */
-    private void updateToDB(Page page){
+    private void updateToDB(Page page,Page pageFromDB){
         String sql = "update  tb_product_info  set title=?," +
                 "imageUrl=?," +
                 "price=?," +
@@ -76,7 +82,7 @@ public class DefaultPageDaoImpl implements IPageDao {
                     page.getCommentCnt(),
                     page.getGoodRate(),
                     page.getParams(),
-                    page.getId());
+                    pageFromDB.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }

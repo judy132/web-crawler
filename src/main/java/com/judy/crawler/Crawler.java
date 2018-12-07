@@ -1,11 +1,13 @@
 package com.judy.crawler;
 
+import com.judy.crawler.constants.CommonConstants;
 import com.judy.crawler.domian.Page;
 import com.judy.crawler.download.IDownloadBiz;
 import com.judy.crawler.download.impl.DownloadBizImpl;
 import com.judy.crawler.parse.IParseBiz;
 import com.judy.crawler.parse.impl.JDParseBizImpl;
 import com.judy.crawler.store.IStoreBiz;
+import com.judy.crawler.store.biz.ConsoleStroreBizImpl;
 import com.judy.crawler.store.biz.RDBMSStroreBizImpl;
 
 /**
@@ -50,7 +52,6 @@ public class Crawler {
      *
      * @param page
      */
-    //----------------------------------------------
     public void parse(Page page) {
         parseBiz.parse(page);
 
@@ -71,7 +72,8 @@ public class Crawler {
      * 开始爬虫
      */
     private void start() {
-        String url = "https://item.jd.com/8735304.html";
+//        String url = CommonConstants.CRAWLER_SEED_URL;
+        String url = "https://list.jd.com/list.html?cat=9987,653,655";
 
         //1）下载
         Page page = download(url);
@@ -91,6 +93,6 @@ public class Crawler {
     public static void main(String[] args) {
         new Crawler(new DownloadBizImpl(),
                     new JDParseBizImpl(),
-                    new RDBMSStroreBizImpl()).start();
+                    new ConsoleStroreBizImpl()  ).start();
     }
 }

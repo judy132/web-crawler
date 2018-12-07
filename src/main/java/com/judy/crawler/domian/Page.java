@@ -77,10 +77,16 @@ public class Page {
      */
     private String params;
 
+
     /**
+     * 一个类中，若类的属性是集合类型，一般需要进行手动初始化
+     *
+     * 1)若当前页面是商品列表页面，存放的是列表页面中所有商品的url
+     * 2)若当前页面是品类列表页面，存放的是所有品类的url,如：https://list.jd.com/list.html?cat=9987,653,655
+     *                                                                                  https://list.jd.com/list.html?cat=670,671,672
      *
      */
-//    private List<String> urls= new LinkedList<>();
+    private List<String> urls= new LinkedList<>();
 
     public Page() {
     }
@@ -186,6 +192,13 @@ public class Page {
         this.params = params;
     }
 
+    public List<String> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(List<String> urls) {
+        this.urls = urls;
+    }
 
     @Override
     public String toString() {

@@ -2,10 +2,14 @@ package com.judy.crawler.parse.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.judy.crawler.constants.CommonConstants;
 import com.judy.crawler.domian.Page;
 import com.judy.crawler.parse.IParseBiz;
 import com.judy.crawler.utils.CrawlerUtils;
+import com.judy.crawler.utils.PropertiesManagerUtil;
 import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
+import org.htmlcleaner.XPatherException;
 
 /**
  * Description: thinking by myself<br/>
@@ -16,10 +20,60 @@ import org.htmlcleaner.HtmlCleaner;
  * @author judy
  * @version:1.0
  */
-public class JDParseBizImpl implements IParseBiz{
+public class JDParseBizImpl implements IParseBiz {
 
     @Override
     public void parse(Page page) {
+        //判断page url的类型
+        String pageUrl = page.getUrl();
+        //html共通解析需要的HtmlCleaner实例
+        HtmlCleaner cleaner = new HtmlCleaner();
+
+        if (pageUrl.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_URL_PREFIX))) {
+
+            parseSingleGood(page);
+        } else if (pageUrl.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_LIST_URL_PREFIX))) {
+            //如果是商品列表，解析列表中的每个商品url
+            parseGoodsList(cleaner, page);
+        } else {
+            //若是品类列表页面，解析品类列表
+            parseAllCategroies();
+        }
+
+
+    }
+
+    private void parseAllCategroies() {
+
+    }
+
+    private void parseGoodsList(HtmlCleaner cleaner, Page page) {
+        TagNode htmlNode = cleaner.clean(page.getContent());
+        try {
+            //当前列表 包含手机url的a 标签
+            Object[] objects = htmlNode.evaluateXPath("//*[@id=\"plist\"]/ul/li[*]/div/div[1]/a");
+            if (objects != null && objects.length > 0) {
+                for (Object object : objects) {
+                    //变成可用的a 节点
+                    TagNode aNode= (TagNode) object;
+                    String href = aNode.getAttributeByName("href");
+                    //拿到当前列表所有的手机url加到 page 设定的列表中
+                    page.getUrls().add("https:"+href);
+                }
+            }
+
+            //把当前列表页面指向下一页的url也get到，同时放入page列表中
+            String nextPageListUrl = CrawlerUtils.getTagAttrValueByAttr(cleaner, page, "//a[@class='fp-next']", "href");
+                //不是最后一页
+            if (nextPageListUrl != null && !nextPageListUrl.trim().isEmpty()) {
+                page.getUrls().add("https://list.jd.com" + nextPageListUrl);
+            }
+        } catch (XPatherException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseSingleGood(Page page) {
         //产品的唯一标识 ~>String，UUID ，全球唯一的字符串
         page.setId(CrawlerUtils.getUUID());
 
@@ -82,6 +136,7 @@ public class JDParseBizImpl implements IParseBiz{
 
         //⑤将最终的结果设置为Page实例的属性params的值
         page.setParams(object.toJSONString());
-
     }
+
+
 }

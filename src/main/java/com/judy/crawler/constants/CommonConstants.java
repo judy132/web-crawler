@@ -29,6 +29,24 @@ public interface CommonConstants {
      * 连接的实例获取失败时提示信息
      */
     String CONNECTION_FAILURE_MSG = "connection.failure.msg";
+    /**
+     * 种子url
+     */
+    String CRAWLER_SEED_URL= "crawler.seed.url";
+    /**
+     * 商品列表url的前缀
+     */
+    String CRAWLER_GOODS_LIST_URL_PREFIX = "crawler.goods.list.url.prefix";
+    /**
+     * 商品url的前缀
+     */
+    String CRAWLER_GOODS_URL_PREFIX="crawler.goods.url.prefix";
 
-    String CRAWLER_SEED_URL="";
+
+    /**
+     * 准备接口名
+     */
+    String IDOWLOADBIZ = "IDowloadBiz";
+    String IPARSEBIZ = "IParseBiz";
+    String ISTOREBIZ = "IStoreBiz";
 }
