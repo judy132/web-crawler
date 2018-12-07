@@ -3,6 +3,9 @@ package com.judy.crawler.domian;
 
 import lombok.Data;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Description: Page实体类 （对产品页面解析后的结果的封装）<br/>
  * Copyright (c),2018,judyxia<br/>
@@ -73,6 +76,11 @@ public class Page {
      * 参数 ~>String, 向表中相应的字段处存入一个json对象格式的数据
      */
     private String params;
+
+    /**
+     *
+     */
+//    private List<String> urls= new LinkedList<>();
 
     public Page() {
     }

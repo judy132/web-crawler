@@ -1,6 +1,6 @@
 package com.judy.crawler.store;
 
-/**
+import com.judy.crawler.domian.Page; /**
  * Description: thinking by myself<br/>
  * Copyright (c),2018,judyxia<br/>
  * This program is protected by copyright laws,<br/>
@@ -11,4 +11,5 @@ package com.judy.crawler.store;
  */
 public interface IStoreBiz {
 
+    void store(Page page);
 }

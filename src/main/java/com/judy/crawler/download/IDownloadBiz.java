@@ -1,5 +1,7 @@
 package com.judy.crawler.download;
 
+import com.judy.crawler.domian.Page;
+
 /**
  * Description: thinking by myself<br/>
  * Copyright (c),2018,judyxia<br/>
@@ -10,4 +12,5 @@ package com.judy.crawler.download;
  * @version:1.0
  */
 public interface IDownloadBiz {
+    Page download(String url);
 }

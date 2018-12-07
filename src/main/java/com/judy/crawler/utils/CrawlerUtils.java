@@ -12,6 +12,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
@@ -142,23 +143,24 @@ public class CrawlerUtils {
 
     public static void parseProductCommentCountAndGoodRate(Page page, String commentURL) {
         String content = HtmlUtils.downloadPageContent(commentURL);
-        System.out.println("----------------------" + content);
 
         //②解析内容
-        CommentBean commentBean = null;
+       /* CommentBean commentBean = null;
         try {
 
             commentBean = JSON.parseObject(content, ProductComment.class).getCommentBeans().get(0);
-//            System.out.println("================"+commentBean);
 
         } catch (Exception e) {
-            // e.printStackTrace();
             commentBean = new CommentBean();
-        }
+        }*/
+        JSONObject json = (JSONObject) JSON.parse(content);
+        CommentBean commentBean = new CommentBean();
+        commentBean.setGoodRate(((BigDecimal) ((JSONObject) json.getJSONArray("CommentsCount").get(0)).get("GoodRate")).doubleValue());
+        commentBean.setCommentCount((int) (((JSONObject) json.getJSONArray("CommentsCount").get(0)).get("CommentCount"))
+        );
+
         page.setCommentCnt(commentBean.getCommentCount());
-//        System.out.println("........................"+commentBean.getCommentCount());
         page.setGoodRate(commentBean.getGoodRate());
-//        System.out.println(page);
     }
 
     /**

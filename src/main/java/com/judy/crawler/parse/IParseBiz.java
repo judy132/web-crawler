@@ -1,6 +1,6 @@
 package com.judy.crawler.parse;
 
-/**
+import com.judy.crawler.domian.Page; /**
  * Description: thinking by myself<br/>
  * Copyright (c),2018,judyxia<br/>
  * This program is protected by copyright laws,<br/>
@@ -10,4 +10,6 @@ package com.judy.crawler.parse;
  * @version:1.0
  */
 public interface IParseBiz {
+
+    void parse(Page page);
 }

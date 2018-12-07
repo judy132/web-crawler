@@ -21,17 +21,6 @@ public class CrawlerTest {
         Crawler crawler = new Crawler();
 
         //2，调用爬虫实例的方法
-        String url = "https://item.jd.com/8735304.html";
 
-        //1）下载
-        Page page=crawler.download(url);
-//        System.out.print(page.getContent());
-
-        //2）解析
-        crawler.parse(page);
-        System.out.println(page);
-
-        //3) 存储
-        crawler.store(page);
     }
 }

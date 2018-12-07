@@ -30,5 +30,5 @@ public interface CommonConstants {
      */
     String CONNECTION_FAILURE_MSG = "connection.failure.msg";
 
-
+    String CRAWLER_SEED_URL="";
 }
