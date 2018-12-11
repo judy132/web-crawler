@@ -1,4 +1,4 @@
-package com.judy.crawler.store.biz;
+package com.judy.crawler.store.impl;
 
 import com.judy.crawler.domian.Page;
 import com.judy.crawler.store.IStoreBiz;

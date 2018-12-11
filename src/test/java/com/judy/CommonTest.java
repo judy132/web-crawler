@@ -22,7 +22,9 @@ public class CommonTest {
         System.out.println(new Date().getTime());
     }
 
-    @Test
+
+
+    /*@Test
     public void parse(){
         String str="{\"beans\":[{\"p\":\"1199.00\",\"op\":\"1399.00\",\"id\":\"J_7479820\",\"m\":\"9999.00\"}]}";
         ProductPrice productPrice = JSON.parseObject(str, ProductPrice.class);
@@ -30,5 +32,5 @@ public class CommonTest {
         PriceBean bean=productPrice.getBeans().get(0);
         System.out.println(bean);
         System.out.println("价格是："+bean.getP());
-    }
+    }*/
 }

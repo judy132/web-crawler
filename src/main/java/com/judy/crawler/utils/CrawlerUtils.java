@@ -128,12 +128,14 @@ public class CrawlerUtils {
     public static double parseProductPrice(String pageURL) {
         //①根据url，获得内容
         String content = HtmlUtils.downloadPageContent(pageURL);
-
+        if (content.contains("error")) {
+            return -1;
+        }
         //②解析内容
         JSONArray jsonArray = JSON.parseArray(content);
         JSONObject obj = new JSONObject();
         obj.put("beans", jsonArray); //
-//        String str=obj.toJSONString().replace("\"[","[").replace("]\"","]").replace("\\","");
+        // String str=obj.toJSONString().replace("\"[","[").replace("]\"","]").replace("\\","");
         //str: {"beans",[{"op":"1399.00","m":"9999.00","id":"J_7479820","p":"1199.00"}]}
 
         ProductPrice productPrice = JSON.parseObject(obj.toJSONString(), ProductPrice.class);
@@ -144,6 +146,7 @@ public class CrawlerUtils {
 
     /**
      * 解析商品的的评论数和好评率
+     *
      * @param page
      * @param commentURL
      */
@@ -219,6 +222,9 @@ public class CrawlerUtils {
 
             //get商品介绍中的品牌  放到商品详细介绍json对象中
             String brand = CrawlerUtils.getTagTextValueByAttr(cleaner, page, "//ul[@id=\"parameter-brand\"]/li");
+            if (brand==null){
+                return null;
+            }
             String[] split = brand.split("：");
             goodsIntroduceDetail.put(split[0].trim(), split[1].trim());
 
@@ -321,6 +327,19 @@ public class CrawlerUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 线程休眠间隔  随机几秒之内
+     * @param inputSeconds 输入需要休眠的最大秒数
+     */
+    public static void sleep(int inputSeconds) {
+        int randomSenconds = (int) (Math.random() * inputSeconds + 1);
+        try {
+            Thread.sleep(randomSenconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -11,14 +11,14 @@ package com.judy.crawler.constants;
  */
 public interface CommonConstants {
     /**
-     *运行模式
+     * 运行模式
      */
-    String CRAWLER_JOB_RUN_MODE="crawler.job.run.mode";
+    String CRAWLER_JOB_RUN_MODE = "crawler.job.run.mode";
 
     /**
      * dbcp连接池共用属性文件
      */
-    String DBCP_COMMON_FILE_NAME="dbcp-config.properties";
+    String DBCP_COMMON_FILE_NAME = "dbcp-config.properties";
 
     /**
      * 共通配置信息资源文件名
@@ -32,7 +32,7 @@ public interface CommonConstants {
     /**
      * 种子url
      */
-    String CRAWLER_SEED_URL= "crawler.seed.url";
+    String CRAWLER_SEED_URL = "crawler.seed.url";
     /**
      * 商品列表url的前缀
      */
@@ -40,13 +40,37 @@ public interface CommonConstants {
     /**
      * 商品url的前缀
      */
-    String CRAWLER_GOODS_URL_PREFIX="crawler.goods.url.prefix";
+    String CRAWLER_GOODS_URL_PREFIX = "crawler.goods.url.prefix";
 
+    /**
+     * 全部商品品类url的前缀
+     */
+    String CRAWLER_JD_GOODS_ALL_URL_PREFIX = "crawler.jd.goods.all.url.prefix";
 
     /**
      * 准备接口名
      */
-    String IDOWLOADBIZ = "IDowloadBiz";
+    String IDOWNLOADBIZ = "IDownloadBiz";
     String IPARSEBIZ = "IParseBiz";
     String ISTOREBIZ = "IStoreBiz";
+
+    String IURLREPOSITORYBIZ = "IUrlRepositoryBiz";
+
+
+    /**
+     * redis 存储不同优先级的url对应的key
+     */
+    String CRAWLER_URL_REDIS_REPOSITORY_HIGHER_KEY = "crawler.url.redis.repository.higher.key";
+    String CRAWLER_URL_REDIS_REPOSITORY_LOWER_KEY = "crawler.url.redis.repository.lower.key";
+    String CRAWLER_URL_REDIS_REPOSITORY_OTHER_KEY = "crawler.url.redis.repository.other.key";
+
+    /**
+     * redis相应的配置参数的key
+     */
+    String CRAWLER_REDIS_MAX_IDLE = "crawler.redis.maxIdle";
+    String CRAWLER_REDIS_MAX_TOTAL = "crawler.redis.maxTotal";
+    String CRAWLER_REDIS_MAX_WAIT_MILLIS = "crawler.redis.maxWaitMillis";
+    String CRAWLER_REDIS_HOST = "crawler.redis.host";
+    String CRAWLER_REDIS_PORT ="crawler.redis.port" ;
+    String CRAWLER_REDIS_TIMEOUT ="crawler.redis.timeout" ;
 }

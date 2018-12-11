@@ -3,12 +3,16 @@ package com.judy.crawler;
 import com.judy.crawler.constants.CommonConstants;
 import com.judy.crawler.domian.Page;
 import com.judy.crawler.download.IDownloadBiz;
-import com.judy.crawler.download.impl.DownloadBizImpl;
 import com.judy.crawler.parse.IParseBiz;
-import com.judy.crawler.parse.impl.JDParseBizImpl;
+import com.judy.crawler.repository.IUrlRepositoryBiz;
 import com.judy.crawler.store.IStoreBiz;
-import com.judy.crawler.store.biz.ConsoleStroreBizImpl;
-import com.judy.crawler.store.biz.RDBMSStroreBizImpl;
+import com.judy.crawler.utils.CrawlerUtils;
+import com.judy.crawler.utils.InstanceFactory;
+import com.judy.crawler.utils.PropertiesManagerUtil;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Description: 项目入口类<br/>
@@ -23,6 +27,10 @@ public class Crawler {
     private IDownloadBiz downloadBiz;
     private IParseBiz parseBiz;
     private IStoreBiz storeBiz;
+    /**
+     * url仓库
+     */
+    private IUrlRepositoryBiz urlRepository;
 
     public Crawler() {
     }
@@ -31,6 +39,14 @@ public class Crawler {
         this.downloadBiz = downloadBiz;
         this.parseBiz = parseBiz;
         this.storeBiz = storeBiz;
+
+        //初始化容器（集合）  拿仓库实现类 存在redis 或单机
+        urlRepository = InstanceFactory.getInstance(CommonConstants.IURLREPOSITORYBIZ);
+        //添加种子url   全网爬 用商品种类 总页面 https://www.jd.com/allSort.aspx
+        String seedUrl = PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_SEED_URL);
+        //向高优先级的容器中存入种子url
+        urlRepository.pushHigher(seedUrl);
+
     }
 
     /**
@@ -71,18 +87,52 @@ public class Crawler {
     /**
      * 开始爬虫
      */
+
     private void start() {
-//        String url = CommonConstants.CRAWLER_SEED_URL;
-        String url = "https://list.jd.com/list.html?cat=9987,653,655";
+        ExecutorService threadPool = Executors.newFixedThreadPool(10);
+        while (true) {
+            //0）从url仓库中获取一个url
+            final String url = urlRepository.poll();
+            if (url != null) {
+                threadPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        //1）下载
+                        Page page = download(url);
 
-        //1）下载
-        Page page = download(url);
+                        //2）解析
+                        parse(page);
+                        List<String> urls = page.getUrls();
+                        if (urls != null && urls.size() > 0) {
+                            //通过循环判断容器中每个url的类型，然后添加到不同的容器中
+                            for (String urlTmp : urls) {
+                                //若是高优先级的url添加到高优先级的容器中
+                                if (urlTmp.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_LIST_URL_PREFIX))) {
+                                    urlRepository.pushHigher(urlTmp);
+                                    //若是低优先级的url添加到低先级的容器中
+                                } else if (urlTmp.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_URL_PREFIX))) {
+                                    urlRepository.pushLower(urlTmp);
+                                } else {
+                                    urlRepository.pushOther(urlTmp);
+                                }
+                            }
+                        }
 
-        //2）解析
-        parse(page);
+                        //3) 存储
+                        store(page);
+                        //动态休息1~2秒钟
+                        CrawlerUtils.sleep(2);
 
-        //3) 存储
-        store(page);
+                    }
+                });
+
+            } else {
+                System.out.println("暂时没有新的url可供爬取哦！稍等。。。。");
+                //动态休息1~2秒钟
+                CrawlerUtils.sleep(2);
+            }
+
+        }
     }
 
     /**
@@ -91,8 +141,10 @@ public class Crawler {
      * @param args
      */
     public static void main(String[] args) {
-        new Crawler(new DownloadBizImpl(),
-                    new JDParseBizImpl(),
-                    new ConsoleStroreBizImpl()  ).start();
+        IDownloadBiz downloadBiz = InstanceFactory.getInstance(CommonConstants.IDOWNLOADBIZ);
+        IParseBiz parseBiz = InstanceFactory.getInstance(CommonConstants.IPARSEBIZ);
+        IStoreBiz storeBiz = InstanceFactory.getInstance(CommonConstants.ISTOREBIZ);
+
+        new Crawler(downloadBiz, parseBiz, storeBiz).start();
     }
 }

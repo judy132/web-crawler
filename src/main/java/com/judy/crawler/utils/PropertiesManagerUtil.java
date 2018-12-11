@@ -50,4 +50,7 @@ public class PropertiesManagerUtil {
         return properties.getProperty(key);
     }
 
+    public static void loadOtherProperties(Properties otherProperties) {
+        properties.putAll(otherProperties);
+    }
 }
