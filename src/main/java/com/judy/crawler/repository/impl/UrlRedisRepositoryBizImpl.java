@@ -7,7 +7,7 @@ import com.judy.crawler.utils.PropertiesManagerUtil;
 import redis.clients.jedis.Jedis;
 
 /**
- * Description: url仓库模块业务逻辑层接口实现类,分布式版爬虫使用redis内存db来存储url<br/>
+ * Description: url仓库模块业务逻辑层接口实现类,分布式版(单网站)爬虫使用redis内存db来存储url<br/>
  * Copyright (c),2018,judyxia<br/>
  * This program is protected by copyright laws,<br/>
  * Date:2018-12-08

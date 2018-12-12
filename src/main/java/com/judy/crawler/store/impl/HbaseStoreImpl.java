@@ -1,7 +1,13 @@
 package com.judy.crawler.store.impl;
 
+import com.google.common.collect.Table;
 import com.judy.crawler.domian.Page;
 import com.judy.crawler.store.IStoreBiz;
+import org.apache.commons.dbcp.ConnectionFactory;
+
+import java.sql.Connection;
+import java.util.List;
+
 
 /**
  * Description: 存到hbase <br/>
@@ -13,8 +19,25 @@ import com.judy.crawler.store.IStoreBiz;
  * @version:1.0
  */
 public class HbaseStoreImpl implements IStoreBiz {
+    private Table table;
+
+   /* public HbaseStoreImpl() {
+        Connection connection = ConnectionFactory.createConnection();
+        this.table = connection.getTable();
+    }*/
+
     @Override
     public void store(Page page) {
-
+        //拦截页表页面
+        List<String> urls = page.getUrls();
+        if (urls != null && urls.size() > 0) {
+            return;
+        }
+/*
+        //步骤
+        //1查询
+        Filter filter=Single
+        Get get = new Get();
+        */
     }
 }

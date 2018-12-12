@@ -97,31 +97,7 @@ public class Crawler {
                 threadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        //1）下载
-                        Page page = download(url);
-
-                        //2）解析
-                        parse(page);
-                        List<String> urls = page.getUrls();
-                        if (urls != null && urls.size() > 0) {
-                            //通过循环判断容器中每个url的类型，然后添加到不同的容器中
-                            for (String urlTmp : urls) {
-                                //若是高优先级的url添加到高优先级的容器中
-                                if (urlTmp.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_LIST_URL_PREFIX))) {
-                                    urlRepository.pushHigher(urlTmp);
-                                    //若是低优先级的url添加到低先级的容器中
-                                } else if (urlTmp.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_URL_PREFIX))) {
-                                    urlRepository.pushLower(urlTmp);
-                                } else {
-                                    urlRepository.pushOther(urlTmp);
-                                }
-                            }
-                        }
-
-                        //3) 存储
-                        store(page);
-                        //动态休息1~2秒钟
-                        CrawlerUtils.sleep(2);
+                        crawling(url);
 
                     }
                 });
@@ -134,6 +110,47 @@ public class Crawler {
 
         }
     }
+    /**
+     * 爬虫正在爬取操作
+     *
+     * @param url
+     */
+    private void crawling(String url) {
+        //判断该url是否被处理过
+        if (url != null && !url.trim().isEmpty()) {
+            if (CrawlerUtils.judgeUrlExists(url)) {
+                return;
+            } else {
+                CrawlerUtils.saveNowUrl(url);
+            }
+        }
+
+        //1）下载
+        Page page = download(url);
+
+        //2）解析
+        parse(page);
+        List<String> urls = page.getUrls();
+        if (urls != null && urls.size() > 0) {
+            //通过循环判断容器中每个url的类型，然后添加到不同的容器中
+            for (String urlTmp : urls) {
+                //若是高优先级的url添加到高优先级的容器中
+                if (urlTmp.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_LIST_URL_PREFIX))) {
+                    urlRepository.pushHigher(urlTmp);
+                    //若是低优先级的url添加到低先级的容器中
+                } else if (urlTmp.startsWith(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_GOODS_URL_PREFIX))) {
+                    urlRepository.pushLower(urlTmp);
+                } else {
+                    urlRepository.pushOther(urlTmp);
+                }
+            }
+        }
+
+        //3) 存储
+        store(page);
+        //动态休息1~2秒钟
+        CrawlerUtils.sleep(2);
+    }
 
     /**
      * 入口方法
@@ -141,6 +158,12 @@ public class Crawler {
      * @param args
      */
     public static void main(String[] args) {
+        //清空common-url
+        //若标志值是0，进行清空操作
+        if (args != null && PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_URL_CLEAR_FIRST_FLG).equalsIgnoreCase(args[0].trim())) {
+            CrawlerUtils.clearCommonUrl();
+        }
+
         IDownloadBiz downloadBiz = InstanceFactory.getInstance(CommonConstants.IDOWNLOADBIZ);
         IParseBiz parseBiz = InstanceFactory.getInstance(CommonConstants.IPARSEBIZ);
         IStoreBiz storeBiz = InstanceFactory.getInstance(CommonConstants.ISTOREBIZ);

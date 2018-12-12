@@ -3,6 +3,7 @@ package com.judy.crawler.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.judy.crawler.constants.CommonConstants;
 import com.judy.crawler.domian.Page;
 import com.judy.crawler.domian.comment.CommentBean;
 import com.judy.crawler.domian.price.PriceBean;
@@ -10,6 +11,7 @@ import com.judy.crawler.domian.price.ProductPrice;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
+import redis.clients.jedis.Jedis;
 
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -222,7 +224,7 @@ public class CrawlerUtils {
 
             //get商品介绍中的品牌  放到商品详细介绍json对象中
             String brand = CrawlerUtils.getTagTextValueByAttr(cleaner, page, "//ul[@id=\"parameter-brand\"]/li");
-            if (brand==null){
+            if (brand == null) {
                 return null;
             }
             String[] split = brand.split("：");
@@ -331,6 +333,7 @@ public class CrawlerUtils {
 
     /**
      * 线程休眠间隔  随机几秒之内
+     *
      * @param inputSeconds 输入需要休眠的最大秒数
      */
     public static void sleep(int inputSeconds) {
@@ -342,4 +345,60 @@ public class CrawlerUtils {
         }
     }
 
+    /**
+     * 判断当前的url在redis共通仓库中是否存在
+     * sismenber()
+     * @param url
+     * @return
+     */
+    public static boolean judgeUrlExists(String url) {
+
+        Jedis jedis = null;
+        try {
+            //从共通仓库的key
+            String commonResKey = PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_URL_REDIS_REPOSITORY_COMMON_KEY);
+            jedis = JedisUtil.getJedis();
+            //判断url是否在common-key中
+            return jedis.sismember(commonResKey, url);
+        } finally {
+            JedisUtil.close(jedis);
+        }
+    }
+
+    /**
+     * 保存所有爬虫尚未处理的url
+     * sadd()
+     * @param url
+     * @return
+     */
+    public static void saveNowUrl(String url) {
+        Jedis jedis = null;
+        try {
+            String commonRepKey = PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_URL_REDIS_REPOSITORY_COMMON_KEY);
+            //SISMEMBER names 'jack'
+            jedis = JedisUtil.getJedis();
+            jedis.sadd(commonRepKey, url);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+    }
+    /**
+     * 分布式爬虫中的第一个，需要清空共通url
+     * jedis.del()
+     *
+     * @return
+     */
+    public static void clearCommonUrl() {
+        Jedis jedis = null;
+        try {
+            jedis = JedisUtil.getJedis();
+            jedis.del(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_URL_REDIS_REPOSITORY_COMMON_KEY));
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+    }
 }

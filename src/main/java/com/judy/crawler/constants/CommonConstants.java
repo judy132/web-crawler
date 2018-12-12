@@ -65,6 +65,11 @@ public interface CommonConstants {
     String CRAWLER_URL_REDIS_REPOSITORY_OTHER_KEY = "crawler.url.redis.repository.other.key";
 
     /**
+     * 共通仓库的key
+     */
+    String CRAWLER_URL_REDIS_REPOSITORY_COMMON_KEY = "crawler.url.redis.repository.common.key";
+
+    /**
      * redis相应的配置参数的key
      */
     String CRAWLER_REDIS_MAX_IDLE = "crawler.redis.maxIdle";
@@ -73,4 +78,12 @@ public interface CommonConstants {
     String CRAWLER_REDIS_HOST = "crawler.redis.host";
     String CRAWLER_REDIS_PORT ="crawler.redis.port" ;
     String CRAWLER_REDIS_TIMEOUT ="crawler.redis.timeout" ;
+
+    /**
+     * 共通url清空flg
+     */
+    String CRAWLER_URL_CLEAR_FIRST_FLG = "crawler.url.clear.first.flg";
+    String CRAWLER_URL_CLEAR_OTHER_FLG = " crawler.url.clear.other.flg";
+
+
 }
