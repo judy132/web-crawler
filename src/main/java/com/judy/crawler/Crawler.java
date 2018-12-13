@@ -9,7 +9,13 @@ import com.judy.crawler.store.IStoreBiz;
 import com.judy.crawler.utils.CrawlerUtils;
 import com.judy.crawler.utils.InstanceFactory;
 import com.judy.crawler.utils.PropertiesManagerUtil;
+import org.apache.curator.RetryPolicy;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.CreateMode;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -89,6 +95,9 @@ public class Crawler {
      */
 
     private void start() {
+        //注册到zookeeper中
+        register2ZK();
+        //线程池实例
         ExecutorService threadPool = Executors.newFixedThreadPool(10);
         while (true) {
             //0）从url仓库中获取一个url
@@ -110,6 +119,23 @@ public class Crawler {
 
         }
     }
+
+    private void register2ZK() {
+        String zookeeperConnectionString = "cent01:2181,cent03:2181,cent03:2181";
+        RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
+        CuratorFramework client = CuratorFrameworkFactory.newClient(zookeeperConnectionString, retryPolicy);
+        client.start();
+
+        try {
+            String ipAddr = InetAddress.getLocalHost().getHostAddress() + "-" + System.currentTimeMillis();
+            //创建临时节点，第二的参数是描述
+            String nowCrawlerZNode = "/curators/" + ipAddr;
+            client.create().withMode(CreateMode.EPHEMERAL).forPath(nowCrawlerZNode,nowCrawlerZNode.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 爬虫正在爬取操作
      *
