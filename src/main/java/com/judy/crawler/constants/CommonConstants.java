@@ -85,5 +85,8 @@ public interface CommonConstants {
     String CRAWLER_URL_CLEAR_FIRST_FLG = "crawler.url.clear.first.flg";
     String CRAWLER_URL_CLEAR_OTHER_FLG = " crawler.url.clear.other.flg";
 
-
+    /**
+     * 运维人员新增的种子url
+     */
+    String CRAWLER_ADMIN_NEW_ADD_SEED_KEY = "crawler.admin.new.add.seed.key";
 }

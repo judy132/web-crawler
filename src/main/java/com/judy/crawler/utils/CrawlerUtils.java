@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -348,6 +349,7 @@ public class CrawlerUtils {
     /**
      * 判断当前的url在redis共通仓库中是否存在
      * sismenber()
+     *
      * @param url
      * @return
      */
@@ -368,6 +370,7 @@ public class CrawlerUtils {
     /**
      * 保存所有爬虫尚未处理的url
      * sadd()
+     *
      * @param url
      * @return
      */
@@ -384,17 +387,34 @@ public class CrawlerUtils {
             }
         }
     }
+
     /**
      * 分布式爬虫中的第一个，需要清空共通url
      * jedis.del()
      *
      * @return
      */
-    public static void clearCommonUrl() {
+    public static void clearCommonUrl(String commonKey) {
         Jedis jedis = null;
         try {
             jedis = JedisUtil.getJedis();
-            jedis.del(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_URL_REDIS_REPOSITORY_COMMON_KEY));
+            jedis.del(commonKey);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+    }
+
+
+    public static Set<String> getAdminNewAddSeedUrls() {
+        Jedis jedis = null;
+        Set<String> allUrls = null;
+        try {
+            jedis = JedisUtil.getJedis();
+
+            allUrls = jedis.smembers(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_ADMIN_NEW_ADD_SEED_KEY));
+            return allUrls;
         } finally {
             if (jedis != null) {
                 jedis.close();

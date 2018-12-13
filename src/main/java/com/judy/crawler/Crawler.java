@@ -187,7 +187,7 @@ public class Crawler {
         //清空common-url
         //若标志值是0，进行清空操作
         if (args != null && PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_URL_CLEAR_FIRST_FLG).equalsIgnoreCase(args[0].trim())) {
-            CrawlerUtils.clearCommonUrl();
+            CrawlerUtils.clearCommonUrl(PropertiesManagerUtil.getPropertyValue(CommonConstants.CRAWLER_URL_REDIS_REPOSITORY_COMMON_KEY));
         }
 
         IDownloadBiz downloadBiz = InstanceFactory.getInstance(CommonConstants.IDOWNLOADBIZ);
