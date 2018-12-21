@@ -160,6 +160,18 @@
             <version>1.2.46</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!--将Map集合中与key相同(实例的属性)的元素值自动封装到给定的实例中-->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.3</version>
+        </dependency>
 
     </dependencies>
 

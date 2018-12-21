@@ -22,7 +22,9 @@ import java.util.Set;
  */
 public class RandomRedisRepositoryAllBizImpl implements IUrlRepositoryBiz {
     private Random random;
-    //各平台电商网站 顶级域名集合
+    /**
+     * 各平台电商网站 顶级域名集合
+     */
     private Set<String> allTopDomain;
 
     public RandomRedisRepositoryAllBizImpl() {

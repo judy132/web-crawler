@@ -62,11 +62,13 @@ public class CrawlerUtils {
      *
      * @return
      */
+    private static Pattern COMPILE = Pattern.compile("[^\\.]+(\\.com\\.cn|\\.net\\.cn|\\.org\\.cn|\\.gov\\.cn|\\.com|\\.net|\\.cn|\\.org|\\.cc|\\.me|\\.tel|\\.mobi|\\.asia|\\.biz|\\.info|\\.name|\\.tv|\\.hk|\\.公司|\\.中国|\\.网络)");
+
     public static String getTopDomain(String url) {
         try {
-            String host = new URL(url).getHost().toLowerCase();// 此处获取值转换为小写
-            Pattern pattern = Pattern.compile("[^\\.]+(\\.com\\.cn|\\.net\\.cn|\\.org\\.cn|\\.gov\\.cn|\\.com|\\.net|\\.cn|\\.org|\\.cc|\\.me|\\.tel|\\.mobi|\\.asia|\\.biz|\\.info|\\.name|\\.tv|\\.hk|\\.公司|\\.中国|\\.网络)");
-            Matcher matcher = pattern.matcher(host);
+            // 此处获取值转换为小写
+            String host = new URL(url).getHost().toLowerCase();
+            Matcher matcher = COMPILE.matcher(host);
             while (matcher.find()) {
                 return matcher.group();
             }
@@ -137,9 +139,7 @@ public class CrawlerUtils {
         //②解析内容
         JSONArray jsonArray = JSON.parseArray(content);
         JSONObject obj = new JSONObject();
-        obj.put("beans", jsonArray); //
-        // String str=obj.toJSONString().replace("\"[","[").replace("]\"","]").replace("\\","");
-        //str: {"beans",[{"op":"1399.00","m":"9999.00","id":"J_7479820","p":"1199.00"}]}
+        obj.put("beans", jsonArray);
 
         ProductPrice productPrice = JSON.parseObject(obj.toJSONString(), ProductPrice.class);
         PriceBean bean = productPrice.getBeans().get(0);
@@ -183,7 +183,7 @@ public class CrawlerUtils {
      * @return
      */
     public static long getNowTimeMillions() {
-        return new Date().getTime();
+        return System.currentTimeMillis();
     }
 
     /**
@@ -212,8 +212,8 @@ public class CrawlerUtils {
                     TagNode node = (TagNode) objTmp;
                     //再取div中的子元素 p （p有多个）
                     for (TagNode childNode : node.getChildTags()) {
-                        //取p元素中的 text 文本
-                        String body = childNode.getText().toString();  //分辨率：2340*1080
+                        //取p元素中的 text 文本   //分辨率：2340*1080
+                        String body = childNode.getText().toString();
                         //要切分
                         String[] arr = body.split("：");
 
@@ -271,8 +271,8 @@ public class CrawlerUtils {
         JSONObject pkgObj = new JSONObject();
         //value是个jsonArray
         JSONArray jsonArray = new JSONArray();
-        //建立联系
-        pkgObj.put(pkgtitle, jsonArray);        //最后的封装到大的json对象中
+        //建立联系  最后的封装到大的json对象中
+        pkgObj.put(pkgtitle, jsonArray);
 
 
         //get html
@@ -289,8 +289,8 @@ public class CrawlerUtils {
                     JSONObject perLineDetail = new JSONObject();
                     //get 所有的div= Patable-item节点
                     TagNode node = (TagNode) objTmp;
-                    //node.getChildTags()[0] = h3  每个规格名
-                    String key = node.getChildTags()[0].getText().toString(); //主体 ,基本信息....
+                    //node.getChildTags()[0] = h3  每个规格名 //主体 ,基本信息....
+                    String key = node.getChildTags()[0].getText().toString();
 
                     //get每个规格的详细信息  拿到每个div的dl
                     Object[] dlObjs = node.evaluateXPath("//dl[@class=\"clearfix\"]");

@@ -25,7 +25,9 @@ public class JedisUtil {
     public JedisUtil() {
     }
 
-    //加载redis资源文件
+    /**
+     * 加载redis资源文件
+     */
     private static Properties properties;
 
     static {
@@ -36,7 +38,7 @@ public class JedisUtil {
         String mode = deployMode.toString().toLowerCase();
         try {
             //加载资源文件
-            properties.load(JedisUtil.class.getClassLoader().getResourceAsStream(mode+File.separator+"redis.properties"));
+            properties.load(JedisUtil.class.getClassLoader().getResourceAsStream(mode + File.separator + "redis.properties"));
             //将prop实例中封装的jedis的参数都取出来，都添加到共通的资源文件(conf.)中去
             PropertiesManagerUtil.loadOtherProperties(properties);
         } catch (IOException e) {

@@ -89,4 +89,7 @@ public interface CommonConstants {
      * 运维人员新增的种子url
      */
     String CRAWLER_ADMIN_NEW_ADD_SEED_KEY = "crawler.admin.new.add.seed.key";
+
+    String CLUSTER_NAME="cluster.name";
+    String CLUSTER_NODES="cluster.nodes";
 }
